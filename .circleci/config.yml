@@ -17,31 +17,40 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+      # - run:
+      #     name: Install kubectl
+      #     command: |
+      #       curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
+      #       chmod +x kubectl
+      #       sudo mv kubectl /usr/local/bin/
+      #       mkdir -p ${HOME}/.kube
+      #       touch ${HOME}/.kube/config
+      # - run:
+      #     name: Install Minikube
+      #     command: |
+      #       curl -Lo minikube https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-amd64
+      #       chmod +x minikube
+      #       sudo mv minikube /usr/local/bin/        
+      # - run:
+      #     name: Start Minikube
+      #     command: |
+      #       sudo -E minikube start --vm-driver=none --cpus 2 --memory 2048 --kubernetes-version=${KUBERNETES_VERSION}
+      # - run:
+      #     name: Wait for Minikube
+      #     command: |
+      #       JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}';
+      #       until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do
+      #         sleep 1;
+      #       done 
       - run:
-          name: Install kubectl
+          name: Install Splunk
           command: |
-            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
-            chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
-            mkdir -p ${HOME}/.kube
-            touch ${HOME}/.kube/config
-      - run:
-          name: Install Minikube
-          command: |
-            curl -Lo minikube https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-amd64
-            chmod +x minikube
-            sudo mv minikube /usr/local/bin/        
-      - run:
-          name: Start Minikube
-          command: |
-            sudo -E minikube start --vm-driver=none --cpus 2 --memory 2048 --kubernetes-version=${KUBERNETES_VERSION}
-      - run:
-          name: Wait for Minikube
-          command: |
-            JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}';
-            until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do
-              sleep 1;
-            done                
+            cd /tmp && wget https://download.splunk.com/products/splunk/releases/7.1.1/linux/splunk-7.1.1-8f0ead9ec3db-linux-2.6-amd64.deb
+            sudo dpkg -i splunk-7.1.1-8f0ead9ec3db-linux-2.6-amd64.deb
+            #sudo service splunk start
+
+
+
       - run:
           name: Install dependencies
           command: |
